@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.mapper.JobMapper">
+
+    <resultMap type="com.ly.domain.entity.Job" id="BaseResultMap">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="cronExpression" column="cron_expression" jdbcType="VARCHAR"/>
+        <result property="beanName" column="bean_name" jdbcType="VARCHAR"/>
+        <result property="methodName" column="method_name" jdbcType="VARCHAR"/>
+        <result property="params" column="params" jdbcType="VARCHAR"/>
+        <result property="jobType" column="job_type" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="num" column="num" jdbcType="INTEGER"/>
+        <result property="retry" column="retry" jdbcType="INTEGER"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="lastExecTime" column="last_exec_time" jdbcType="OTHER" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="OTHER" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="OTHER" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,cron_expression,bean_name,method_name,params,job_type,status,num,retry,description,last_exec_time,create_by,create_time,update_by,update_time
+    </sql>
+
+    <select id="findById" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from job where id =#{id}
+    </select>
+
+    <insert id="add" parameterType="com.ly.domain.entity.Job">
+        insert into job(id,name,cron_expression,bean_name,method_name,params,job_type,status,num,retry,description,create_by,create_time)
+        values (#{id}, #{name}, #{cronExpression}, #{beanName}, #{methodName}, #{params}, #{jobType},
+                #{status}, #{num}, #{retry},#{description},#{createBy}, #{createTime})
+    </insert>
+
+    <update id="update" parameterType="com.ly.domain.entity.Job">
+        update job
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="cronExpression != null">
+                cron_expression = #{cronExpression},
+            </if>
+            <if test="beanName != null">
+                bean_name = #{beanName},
+            </if>
+            <if test="methodName != null">
+                method_name = #{methodName},
+            </if>
+            <if test="params != null">
+                params = #{params},
+            </if>
+            <if test="jobType != null">
+                job_type = #{jobType},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="num != null">
+                num = #{num},
+            </if>
+            <if test="retry != null">
+                retry = #{retry},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="lastExecTime != null">
+                last_exec_time = #{lastExecTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="all" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from job
+    </select>
+
+    <select id="listByType" parameterType="integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from job where job_type = #{jobType} and `status` in (0,1)
+    </select>
+</mapper>
